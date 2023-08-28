@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with GPT-3</title>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const chatLog = document.getElementById('chat-log');
+        const userInput = document.getElementById('user-input');
+
+        let apiKey = localStorage.getItem('gpt3ApiKey');
+        let isFirstPrompt = true;
+
+        async function sendMessage() {
+            const userMessage = userInput.value;
+            appendMessage('User: ' + userMessage);
+
+            if (!apiKey) {
+                apiKey = prompt('Please enter your GPT-3 API key:');
+                localStorage.setItem('gpt3ApiKey', apiKey);
+            }
+
+            let prompt = '';
+            if (isFirstPrompt) {
+                prompt = 'You are a helpful assistant.\nUser: ' + userMessage + '\nAssistant:';
+                isFirstPrompt = false;
+            } else {
+                prompt = 'User: ' + userMessage + '\nAssistant:';
+            }
+
+            const gptResponse = await getGptResponse(prompt);
+            appendMessage('GPT-3: ' + gptResponse);
+
+            userInput.value = '';
+        }
+
+        async function getGptResponse(prompt) {
+            const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    max_tokens: 50
+                })
+            });
+
+            const data = await response.json();
+            return data.choices[0].text;
+        }
+
+        function appendMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            chatLog.appendChild(messageElement);
+        }
+
+        userInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
