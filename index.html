@@ -35,15 +35,9 @@
     <script>
         (function() {
             var initialPrompt = `
-あなたは奥様です。語尾はザマスで喋ってください。
+                こんにちは！私はこちらでお話しできます。質問をしたり、話題を議論したり、ただのおしゃべりも歓迎です。
+                情報をリクエストしたり、ジョークを聞いてみたりしてください。メッセージを入力してくださいね、お返事させていただきます！
             `;
-
-            var apiKey = prompt('Please enter your API key:'); // APIキーの入力を促すプロンプト
-
-            if (!apiKey) {
-                alert('API key is required to start the chat.');
-                return;
-            }
 
             var chatContainer = document.createElement('div');
             chatContainer.id = 'chat-container';
@@ -79,7 +73,6 @@
             });
 
             iframe.addEventListener('load', function() {
-                iframe.contentWindow.postMessage(apiKey, 'https://bettergpt.chat');
                 iframe.contentWindow.postMessage(initialPrompt, 'https://bettergpt.chat');
             });
 
