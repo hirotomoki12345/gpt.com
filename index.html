@@ -35,10 +35,8 @@
     <script>
         (function() {
             var initialPrompt = `
-                こんにちは！私はこちらでお話しできます。質問をしたり、話題を議論したり、ただのおしゃべりも歓迎です。
-                情報をリクエストしたり、ジョークを聞いてみたりしてください。メッセージを入力してくださいね、お返事させていただきます！
-            `;
-
+                これなに？`;
+                
             var chatContainer = document.createElement('div');
             chatContainer.id = 'chat-container';
             document.body.appendChild(chatContainer);
@@ -76,7 +74,6 @@
                 iframe.contentWindow.postMessage(initialPrompt, 'https://bettergpt.chat');
             });
 
-            alert('Made by RandumbGuy#6414! Please copy this and put into your custom api endpoint https://free.churchless.tech/v1/chat/completions');
         })();
     </script>
 </body>
