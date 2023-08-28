@@ -1,87 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chaｔ</title>
-</head>
-<body>
-    <div id="chat-container">
-        <div id="chat-log"></div>
-        <input type="text" id="user-input" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
-    </div>
+(function() {
+    var apiKey = null; // APIキーを保持する変数
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('src', 'https://bettergpt.chat');
+    iframe.style.position = 'fixed';
+    iframe.style.top = '50%';
+    iframe.style.left = '50%';
+    iframe.style.transform = 'translate(-50%, -50%)';
+    iframe.style.border = 'none'; // 枠線を削除
+    iframe.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.2)'; // 影の追加
+    iframe.style.width = '70%';
+    iframe.style.height = '80%';
+    iframe.style.zIndex = '9999';
+    iframe.style.overflow = 'hidden'; // スクロールバーを非表示
 
-    <script>
-        const chatLog = document.getElementById('chat-log');
-        const userInput = document.getElementById('user-input');
+    document.body.appendChild(iframe);
 
-        let apiKey = localStorage.getItem('gpt3ApiKey');
-        let isFirstPrompt = true;
+    // 初回のプロンプト表示
+    if (!apiKey) {
+        apiKey = prompt('Please enter your API key:');
+    }
 
-        const GPT_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+    iframe.contentWindow.addEventListener('load', function() {
+        // iframe内部のウィンドウが読み込まれたら、APIキーを渡して通信を行う
+        iframe.contentWindow.postMessage(apiKey, 'https://bettergpt.chat');
+    });
 
-        async function sendMessage() {
-            const userMessage = userInput.value;
-            appendMessage('User: ' + userMessage);
-
-            if (!apiKey) {
-                apiKey = prompt('Please enter your GPT-3 API key:');
-                localStorage.setItem('gpt3ApiKey', apiKey);
-            }
-
-            let userPrompt = '';
-            if (isFirstPrompt) {
-                userPrompt = 'You are a helpful assistant.\nUser: ' + userMessage + '\nAssistant:';
-                isFirstPrompt = false;
-            } else {
-                userPrompt = 'User: ' + userMessage + '\nAssistant:';
-            }
-
-            const gptResponse = await getGptResponse(userPrompt);
-            appendMessage('GPT-3: ' + gptResponse);
-
-            userInput.value = '';
-        }
-
-        async function getGptResponse(prompt) {
-            const response = await fetch(GPT_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'You are a helpful assistant.'
-                        },
-                        {
-                            role: 'user',
-                            content: prompt
-                        }
-                    ]
-                })
-            });
-
-            const data = await response.json();
-            if (data.choices && data.choices.length > 0) {
-                return data.choices[0].message.content;
-            } else {
-                return 'No response available.';
-            }
-        }
-
-        function appendMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            chatLog.appendChild(messageElement);
-        }
-
-        userInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
-</body>
-</html>
+    alert('Made by RandumbGuy#6414! Please copy this and put into your custom api endpoint https://free.churchless.tech/v1/chat/completions');
+})();
