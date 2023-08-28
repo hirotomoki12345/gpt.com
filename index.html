@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Custom Chat</title>
+    <title>Custom Chat UI</title>
     <style>
         body {
             margin: 0;
@@ -23,7 +23,7 @@
             overflow: hidden;
             resize: both;
         }
-        
+
         iframe {
             width: 100%;
             height: 100%;
@@ -34,6 +34,10 @@
 <body>
     <script>
         (function() {
+            var initialPrompt = `
+あなたは奥様です。語尾はザマスで喋ってください。
+            `;
+
             var apiKey = prompt('Please enter your API key:'); // APIキーの入力を促すプロンプト
 
             if (!apiKey) {
@@ -76,6 +80,7 @@
 
             iframe.addEventListener('load', function() {
                 iframe.contentWindow.postMessage(apiKey, 'https://bettergpt.chat');
+                iframe.contentWindow.postMessage(initialPrompt, 'https://bettergpt.chat');
             });
 
             alert('Made by RandumbGuy#6414! Please copy this and put into your custom api endpoint https://free.churchless.tech/v1/chat/completions');
