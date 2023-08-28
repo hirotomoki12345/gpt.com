@@ -15,24 +15,90 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-            width: 70%;
+            width: 80%;
             height: 80%;
             z-index: 9999;
             overflow: hidden;
         }
+
+        #drag-border {
+            position: fixed;
+            top: calc(50% - 8px);
+            left: calc(50% - 8px);
+            width: calc(80% + 16px);
+            height: calc(80% + 16px);
+            border: 8px solid transparent;
+            cursor: move;
+            z-index: 9998;
+        }
+
+        #close-button {
+            position: fixed;
+            top: 5px;
+            right: 5px;
+            font-size: 20px;
+            color: white;
+            background-color: aquamarine;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 10000;
+        }
     </style>
 </head>
 <body>
-    <div id="iframe-container"></div>
+    <div id="iframe-container">
+        <!-- This div will contain the iframe -->
+    </div>
+    <div id="drag-border"></div>
+    <button id="close-button">X</button>
 
     <script>
         (function() {
             var apiKey = null; // APIキーを保持する変数
+
+            // Create the iframe
             var iframe = document.createElement('iframe');
             iframe.setAttribute('src', 'https://bettergpt.chat');
             iframe.style.border = 'none';
             document.getElementById('iframe-container').appendChild(iframe);
+
+            // Create the border for dragging
+            var border = document.getElementById('drag-border');
+
+            // Create the close button
+            var closeButton = document.getElementById('close-button');
+            closeButton.addEventListener('click', function() {
+                iframe.remove();
+                border.remove();
+                closeButton.remove();
+            });
+
+            var isDragging = false;
+            var startX, startY, startLeft, startTop;
+            border.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = iframe.offsetLeft;
+                startTop = iframe.offsetTop;
+                isDragging = true;
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    var newLeft = startLeft + (e.clientX - startX);
+                    var newTop = startTop + (e.clientY - startY);
+                    iframe.style.left = newLeft + 'px';
+                    iframe.style.top = newTop + 'px';
+                }
+            });
 
             // 初回のプロンプト表示
             if (!apiKey) {
