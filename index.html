@@ -1,89 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Custom Chat</title>
+    <title>Custom Chat UI</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: #f5f5f5;
             font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
-        #iframe-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        #chat-container {
+            position: relative;
             width: 80%;
             height: 80%;
-            z-index: 9999;
+            border: 8px solid aquamarine;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            resize: both;
         }
-
-        #drag-border {
-            position: fixed;
-            top: calc(50% - 8px);
-            left: calc(50% - 8px);
-            width: calc(80% + 16px);
-            height: calc(80% + 16px);
-            border: 8px solid transparent;
-            cursor: move;
-            z-index: 9998;
-        }
-
-        #close-button {
-            position: fixed;
-            top: 5px;
-            right: 5px;
-            font-size: 20px;
-            color: white;
-            background-color: aquamarine;
+        
+        iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            z-index: 10000;
         }
     </style>
 </head>
 <body>
-    <div id="iframe-container">
-        <!-- This div will contain the iframe -->
+    <div id="chat-container">
+        <iframe src="https://bettergpt.chat"></iframe>
     </div>
-    <div id="drag-border"></div>
-    <button id="close-button">X</button>
 
     <script>
         (function() {
             var apiKey = null; // APIキーを保持する変数
 
-            // Create the iframe
-            var iframe = document.createElement('iframe');
-            iframe.setAttribute('src', 'https://bettergpt.chat');
-            iframe.style.border = 'none';
-            document.getElementById('iframe-container').appendChild(iframe);
-
-            // Create the border for dragging
-            var border = document.getElementById('drag-border');
-
-            // Create the close button
-            var closeButton = document.getElementById('close-button');
-            closeButton.addEventListener('click', function() {
-                iframe.remove();
-                border.remove();
-                closeButton.remove();
-            });
+            var chatContainer = document.getElementById('chat-container');
 
             var isDragging = false;
             var startX, startY, startLeft, startTop;
-            border.addEventListener('mousedown', function(e) {
+            chatContainer.addEventListener('mousedown', function(e) {
                 e.preventDefault();
                 startX = e.clientX;
                 startY = e.clientY;
-                startLeft = iframe.offsetLeft;
-                startTop = iframe.offsetTop;
+                startLeft = chatContainer.offsetLeft;
+                startTop = chatContainer.offsetTop;
                 isDragging = true;
             });
 
@@ -95,8 +61,8 @@
                 if (isDragging) {
                     var newLeft = startLeft + (e.clientX - startX);
                     var newTop = startTop + (e.clientY - startY);
-                    iframe.style.left = newLeft + 'px';
-                    iframe.style.top = newTop + 'px';
+                    chatContainer.style.left = newLeft + 'px';
+                    chatContainer.style.top = newTop + 'px';
                 }
             });
 
@@ -105,7 +71,8 @@
                 apiKey = prompt('Please enter your API key:');
             }
 
-            iframe.contentWindow.addEventListener('load', function() {
+            var iframe = document.querySelector('iframe');
+            iframe.addEventListener('load', function() {
                 // iframe内部のウィンドウが読み込まれたら、APIキーを渡して通信を行う
                 iframe.contentWindow.postMessage(apiKey, 'https://bettergpt.chat');
             });
