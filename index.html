@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat</title>
+    <title>Chat with GPT-3</title>
 </head>
 <body>
     <div id="chat-container">
@@ -54,7 +54,11 @@
             });
 
             const data = await response.json();
-            return data.choices[0].text;
+            if (data.choices && data.choices.length > 0) {
+                return data.choices[0].text;
+            } else {
+                return 'No response available.';
+            }
         }
 
         function appendMessage(message) {
