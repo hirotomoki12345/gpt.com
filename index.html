@@ -26,15 +26,15 @@
                 localStorage.setItem('gpt3ApiKey', apiKey);
             }
 
-            let prompt = '';
+            let userPrompt = '';
             if (isFirstPrompt) {
-                prompt = 'You are a helpful assistant.\nUser: ' + userMessage + '\nAssistant:';
+                userPrompt = 'You are a helpful assistant.\nUser: ' + userMessage + '\nAssistant:';
                 isFirstPrompt = false;
             } else {
-                prompt = 'User: ' + userMessage + '\nAssistant:';
+                userPrompt = 'User: ' + userMessage + '\nAssistant:';
             }
 
-            const gptResponse = await getGptResponse(prompt);
+            const gptResponse = await getGptResponse(userPrompt);
             appendMessage('GPT-3: ' + gptResponse);
 
             userInput.value = '';
