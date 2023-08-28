@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat with GPT-3</title>
+    <title>Chaｔ</title>
 </head>
 <body>
     <div id="chat-container">
@@ -16,6 +16,8 @@
 
         let apiKey = localStorage.getItem('gpt3ApiKey');
         let isFirstPrompt = true;
+
+        const GPT_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 
         async function sendMessage() {
             const userMessage = userInput.value;
@@ -41,21 +43,29 @@
         }
 
         async function getGptResponse(prompt) {
-            const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+            const response = await fetch(GPT_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    prompt: prompt,
-                    max_tokens: 50
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'You are a helpful assistant.'
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ]
                 })
             });
 
             const data = await response.json();
             if (data.choices && data.choices.length > 0) {
-                return data.choices[0].text;
+                return data.choices[0].message.content;
             } else {
                 return 'No response available.';
             }
