@@ -32,15 +32,23 @@
     </style>
 </head>
 <body>
-    <div id="chat-container">
-        <iframe src="https://bettergpt.chat"></iframe>
-    </div>
-
     <script>
         (function() {
-            var apiKey = null; // APIキーを保持する変数
+            var apiKey = prompt('Please enter your API key:'); // APIキーの入力を促すプロンプト
 
-            var chatContainer = document.getElementById('chat-container');
+            if (!apiKey) {
+                alert('API key is required to start the chat.');
+                return;
+            }
+
+            var chatContainer = document.createElement('div');
+            chatContainer.id = 'chat-container';
+            document.body.appendChild(chatContainer);
+
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://bettergpt.chat';
+            iframe.style.border = 'none';
+            chatContainer.appendChild(iframe);
 
             var isDragging = false;
             var startX, startY, startLeft, startTop;
@@ -66,14 +74,7 @@
                 }
             });
 
-            // 初回のプロンプト表示
-            if (!apiKey) {
-                apiKey = prompt('Please enter your API key:');
-            }
-
-            var iframe = document.querySelector('iframe');
             iframe.addEventListener('load', function() {
-                // iframe内部のウィンドウが読み込まれたら、APIキーを渡して通信を行う
                 iframe.contentWindow.postMessage(apiKey, 'https://bettergpt.chat');
             });
 
